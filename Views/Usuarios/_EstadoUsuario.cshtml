@@ -1,0 +1,14 @@
+@model UsuarioListaViewModel
+<span class="badge @(Model.Rol == Roles.Admin ? "text-bg-primary" : "text-bg-secondary")">@Model.Rol</span>
+@if (Model.Activo)
+{
+    <span class="badge text-bg-success">Activo</span>
+}
+else
+{
+    <span class="badge text-bg-light border">Inactivo</span>
+}
+@if (Model.Bloqueado)
+{
+    <span class="badge text-bg-warning" title="Bloqueado por intentos fallidos">Bloqueado</span>
+}

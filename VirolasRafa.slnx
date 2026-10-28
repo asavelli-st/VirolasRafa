@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="VirolasRafa.csproj" />
+  <Folder Name="/tests/">
+    <Project Path="tests/VirolasRafa.Tests/VirolasRafa.Tests.csproj" />
+  </Folder>
+</Solution>

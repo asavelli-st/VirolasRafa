@@ -1,0 +1,196 @@
+﻿/* Paleta tomada de docs/prototipo-presupuesto.html, aplicada sobre las variables de Bootstrap 5.3. */
+:root,
+[data-bs-theme=light] {
+    --superficie: #ffffff;
+    --bs-body-bg: #f3f4f1;
+    --bs-body-bg-rgb: 243, 244, 241;
+    --bs-body-color: #17211e;
+    --bs-body-color-rgb: 23, 33, 30;
+    --bs-secondary-color: #56635f;
+    --bs-border-color: #d5dad3;
+    --bs-primary: #0b5f57;
+    --bs-primary-rgb: 11, 95, 87;
+    --bs-primary-text-emphasis: #063a35;
+    --bs-primary-bg-subtle: #dceeea;
+    --bs-primary-border-subtle: #9ccbc4;
+    --bs-link-color: #0b5f57;
+    --bs-link-color-rgb: 11, 95, 87;
+    --bs-link-hover-color: #084842;
+    --bs-link-hover-color-rgb: 8, 72, 66;
+    --bs-focus-ring-color: rgba(11, 95, 87, .35);
+    --boton-primario-texto: #ffffff;
+    --boton-primario-hover: #084842;
+}
+
+[data-bs-theme=dark] {
+    --superficie: #18211e;
+    --bs-body-bg: #101614;
+    --bs-body-bg-rgb: 16, 22, 20;
+    --bs-body-color: #eaf0ed;
+    --bs-body-color-rgb: 234, 240, 237;
+    --bs-secondary-color: #a3b2ac;
+    --bs-secondary-bg: #202b27;
+    --bs-tertiary-bg: #1c2522;
+    --bs-border-color: #33423d;
+    --bs-primary: #4fc3b4;
+    --bs-primary-rgb: 79, 195, 180;
+    --bs-primary-text-emphasis: #8fdcd1;
+    --bs-primary-bg-subtle: #17342f;
+    --bs-primary-border-subtle: #2a6b62;
+    --bs-link-color: #4fc3b4;
+    --bs-link-color-rgb: 79, 195, 180;
+    --bs-link-hover-color: #7fd6ca;
+    --bs-link-hover-color-rgb: 127, 214, 202;
+    --bs-focus-ring-color: rgba(79, 195, 180, .35);
+    --boton-primario-texto: #06201c;
+    --boton-primario-hover: #3fae9f;
+}
+
+.btn-primary {
+    --bs-btn-color: var(--boton-primario-texto);
+    --bs-btn-bg: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-hover-color: var(--boton-primario-texto);
+    --bs-btn-hover-bg: var(--boton-primario-hover);
+    --bs-btn-hover-border-color: var(--boton-primario-hover);
+    --bs-btn-active-color: var(--boton-primario-texto);
+    --bs-btn-active-bg: var(--boton-primario-hover);
+    --bs-btn-active-border-color: var(--boton-primario-hover);
+    --bs-btn-disabled-color: var(--boton-primario-texto);
+    --bs-btn-disabled-bg: var(--bs-primary);
+    --bs-btn-disabled-border-color: var(--bs-primary);
+    --bs-btn-focus-shadow-rgb: var(--bs-primary-rgb);
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-hover-color: var(--boton-primario-texto);
+    --bs-btn-hover-bg: var(--bs-primary);
+    --bs-btn-hover-border-color: var(--bs-primary);
+    --bs-btn-active-color: var(--boton-primario-texto);
+    --bs-btn-active-bg: var(--bs-primary);
+    --bs-btn-active-border-color: var(--bs-primary);
+    --bs-btn-focus-shadow-rgb: var(--bs-primary-rgb);
+}
+
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 .25rem var(--bs-focus-ring-color);
+}
+
+.form-check-input:checked {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+.card,
+.list-group {
+    --bs-card-bg: var(--superficie);
+    --bs-list-group-bg: var(--superficie);
+}
+
+.table {
+    --bs-table-bg: var(--superficie);
+}
+
+.barra-superior {
+    background: var(--superficie);
+}
+
+/* En celular, la marca se recorta para que los botones de la barra queden en la misma fila. */
+@media (max-width: 991.98px) {
+    .barra-superior .navbar-brand {
+        flex: 1 1 0;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.navbar .nav-link.active {
+    color: var(--bs-primary);
+    font-weight: 600;
+}
+
+/* Elementos táctiles de al menos 44 px. */
+.btn,
+.form-control,
+.form-select,
+.dropdown-item {
+    min-height: 44px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .25rem;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .nav-link {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-toggler {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+.form-check-input {
+    width: 1.35em;
+    height: 1.35em;
+}
+
+.form-check {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.form-check .form-check-input {
+    margin-top: 0;
+}
+
+.tarjeta-acceso {
+    color: inherit;
+    transition: border-color .15s;
+}
+
+.tarjeta-acceso:hover,
+.tarjeta-acceso:focus-visible {
+    border-color: var(--bs-primary);
+}
+
+.tarjeta-login {
+    max-width: 420px;
+}
+
+.field-validation-error {
+    color: var(--bs-form-invalid-color);
+    font-size: .875em;
+}
+
+.input-validation-error {
+    border-color: var(--bs-form-invalid-border-color);
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: var(--bs-primary);
+    color: var(--boton-primario-texto);
+}

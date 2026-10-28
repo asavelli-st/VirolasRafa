@@ -1,0 +1,21 @@
+@model ErrorViewModel
+@{
+    var (titulo, texto) = Model.Codigo switch
+    {
+        404 => ("No encontramos la página", "La dirección no existe o el elemento fue eliminado."),
+        403 => ("Sin permiso", "No tenés permiso para ver esta página."),
+        400 => ("Solicitud inválida", "Los datos enviados no son válidos. Volvé atrás e intentá de nuevo."),
+        _ => ("Ocurrió un error", "Algo salió mal al procesar la solicitud. Si se repite, avisale al administrador."),
+    };
+    ViewData["Title"] = titulo;
+}
+<div class="text-center py-5">
+    <i class="fa-solid fa-triangle-exclamation fa-3x text-warning mb-3" aria-hidden="true"></i>
+    <h1 class="h3">@titulo</h1>
+    <p class="text-body-secondary">@texto</p>
+    @if (Model.Codigo >= 500 && Model.RequestId is not null)
+    {
+        <p class="small text-body-secondary">Código de referencia: <code>@Model.RequestId</code></p>
+    }
+    <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Ir al inicio</a>
+</div>

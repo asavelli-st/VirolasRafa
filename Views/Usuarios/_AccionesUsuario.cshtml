@@ -1,0 +1,20 @@
+@model UsuarioListaViewModel
+<a class="btn btn-outline-primary btn-sm" asp-action="Editar" asp-route-id="@Model.Id"><i class="fa-solid fa-pen" aria-hidden="true"></i>Editar</a>
+<a class="btn btn-outline-secondary btn-sm" asp-action="ResetearPassword" asp-route-id="@Model.Id"><i class="fa-solid fa-key" aria-hidden="true"></i>Contraseña</a>
+@if (!Model.EsUsuarioActual)
+{
+    if (Model.Activo)
+    {
+        <form asp-action="Desactivar" asp-route-id="@Model.Id" method="post"
+              data-confirmar="¿Desactivar a @Model.Nombre? No va a poder iniciar sesión hasta que lo vuelvas a activar."
+              data-confirmar-boton="Desactivar">
+            <button type="submit" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-user-slash" aria-hidden="true"></i>Desactivar</button>
+        </form>
+    }
+    else
+    {
+        <form asp-action="Activar" asp-route-id="@Model.Id" method="post">
+            <button type="submit" class="btn btn-outline-success btn-sm"><i class="fa-solid fa-user-check" aria-hidden="true"></i>Activar</button>
+        </form>
+    }
+}

@@ -1,0 +1,46 @@
+@model UsuarioCrearViewModel
+@{
+    ViewData["Title"] = "Nuevo usuario";
+}
+<h1 class="h3 mb-3">Nuevo usuario</h1>
+<div class="card" style="max-width: 640px">
+    <div class="card-body">
+        <form asp-action="Crear" method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            <div class="mb-3">
+                <label asp-for="Nombre" class="form-label"></label>
+                <input asp-for="Nombre" class="form-control" autocomplete="off" />
+                <span asp-validation-for="Nombre"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" autocomplete="off" inputmode="email" />
+                <span asp-validation-for="Email"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Rol" class="form-label"></label>
+                <select asp-for="Rol" asp-items="new SelectList(Roles.Todos)" class="form-select"></select>
+                <span asp-validation-for="Rol"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" autocomplete="new-password" />
+                <div class="form-text">Mínimo 8 caracteres, con mayúscula, minúscula y número.</div>
+                <span asp-validation-for="Password"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ConfirmarPassword" class="form-label"></label>
+                <input asp-for="ConfirmarPassword" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="ConfirmarPassword"></span>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check" aria-hidden="true"></i>Crear usuario</button>
+                <a class="btn btn-outline-secondary" asp-action="Index">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

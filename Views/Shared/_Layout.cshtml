@@ -1,0 +1,113 @@
+@using Microsoft.Extensions.Options
+@using VirolasRafa.Services
+@using VirolasRafa.Services.Infraestructura
+@inject IOptions<EmpresaOptions> Empresa
+@{
+    var autenticado = User.Identity?.IsAuthenticated == true;
+    var controlador = ViewContext.RouteData.Values["controller"] as string;
+    string Activo(string c) => string.Equals(controlador, c, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+}
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>@(ViewData["Title"] is string t ? $"{t} · " : "")@Empresa.Value.Nombre</title>
+    @* Aplica el tema antes de pintar para evitar el parpadeo. *@
+    <script>
+        (function () {
+            var t = 'auto';
+            try { t = localStorage.getItem('tema') || 'auto'; } catch (e) { }
+            if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-bs-theme', t);
+        })();
+    </script>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg barra-superior border-bottom sticky-top">
+        <div class="container-xl">
+            <a class="navbar-brand fw-semibold" asp-controller="Home" asp-action="Index">
+                <i class="fa-solid fa-screwdriver-wrench me-1" aria-hidden="true"></i>@Empresa.Value.Nombre
+            </a>
+
+            <div class="d-flex align-items-center gap-1 order-lg-last">
+                <div class="dropdown">
+                    <button class="btn btn-link nav-link px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Tema de color">
+                        <i class="fa-solid fa-circle-half-stroke" id="icono-tema" aria-hidden="true"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><button type="button" class="dropdown-item" data-tema="auto"><i class="fa-solid fa-circle-half-stroke fa-fw me-2" aria-hidden="true"></i>Auto</button></li>
+                        <li><button type="button" class="dropdown-item" data-tema="light"><i class="fa-solid fa-sun fa-fw me-2" aria-hidden="true"></i>Claro</button></li>
+                        <li><button type="button" class="dropdown-item" data-tema="dark"><i class="fa-solid fa-moon fa-fw me-2" aria-hidden="true"></i>Oscuro</button></li>
+                    </ul>
+                </div>
+                @if (autenticado)
+                {
+                    <div class="dropdown">
+                        <button class="btn btn-link nav-link px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Mi cuenta">
+                            <i class="fa-solid fa-circle-user fa-lg" aria-hidden="true"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li class="px-3 py-2">
+                                <div class="fw-semibold">@User.FindFirst(UsuarioClaimsFactory.ClaimNombre)?.Value</div>
+                                <div class="small text-body-secondary">@User.Identity!.Name · @(User.IsInRole(Roles.Admin) ? Roles.Admin : Roles.Vendedor)</div>
+                            </li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li>
+                                <form asp-controller="Acceso" asp-action="Salir" method="post">
+                                    <button type="submit" class="dropdown-item"><i class="fa-solid fa-right-from-bracket fa-fw me-2" aria-hidden="true"></i>Cerrar sesión</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    <button class="navbar-toggler ms-1" type="button" data-bs-toggle="collapse" data-bs-target="#menu-principal" aria-controls="menu-principal" aria-expanded="false" aria-label="Menú">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                }
+            </div>
+
+            @if (autenticado)
+            {
+                <div class="collapse navbar-collapse" id="menu-principal">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item"><a class="nav-link @Activo("Home")" asp-controller="Home" asp-action="Index"><i class="fa-solid fa-house fa-fw me-1" aria-hidden="true"></i>Inicio</a></li>
+                        @if (User.IsInRole(Roles.Admin))
+                        {
+                            <li class="nav-item"><a class="nav-link @Activo("Usuarios")" asp-controller="Usuarios" asp-action="Index"><i class="fa-solid fa-users fa-fw me-1" aria-hidden="true"></i>Usuarios</a></li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    </nav>
+
+    <main class="container-xl py-3 py-md-4">
+        <partial name="_Mensajes" />
+        @RenderBody()
+    </main>
+
+    @* Diálogo de confirmación para formularios con data-confirmar (ver site.js). *@
+    <div class="modal fade" id="modal-confirmar" tabindex="-1" aria-labelledby="modal-confirmar-titulo" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5" id="modal-confirmar-titulo">Confirmar</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" id="modal-confirmar-texto"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="modal-confirmar-ok">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
