@@ -1,0 +1,70 @@
+@model ClienteDetalleViewModel
+@{
+    ViewData["Title"] = Model.Nombre;
+}
+<div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <div class="me-auto">
+        <a class="small text-decoration-none" asp-action="Index"><i class="fa-solid fa-arrow-left me-1" aria-hidden="true"></i>Clientes</a>
+        <h1 class="h3 mb-0">@Model.Nombre</h1>
+    </div>
+    <a class="btn btn-outline-primary" asp-action="Editar" asp-route-id="@Model.Id"><i class="fa-solid fa-pen" aria-hidden="true"></i>Editar</a>
+    @if (Model.Activo)
+    {
+        <form asp-action="Desactivar" asp-route-id="@Model.Id" method="post"
+              data-confirmar="¿Desactivar a @Model.Nombre? No va a aparecer en los listados de clientes activos ni para nuevos presupuestos."
+              data-confirmar-boton="Desactivar">
+            <button type="submit" class="btn btn-outline-danger"><i class="fa-solid fa-ban" aria-hidden="true"></i>Desactivar</button>
+        </form>
+    }
+    else
+    {
+        <form asp-action="Activar" asp-route-id="@Model.Id" method="post">
+            <button type="submit" class="btn btn-outline-success"><i class="fa-solid fa-check" aria-hidden="true"></i>Activar</button>
+        </form>
+    }
+</div>
+
+@if (!Model.Activo)
+{
+    <div class="alert alert-secondary"><i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>Este cliente está desactivado.</div>
+}
+
+<div class="card" style="max-width: 720px">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4">CUIT / DNI</dt>
+            <dd class="col-sm-8">@(Model.Documento ?? "—")</dd>
+            <dt class="col-sm-4">Teléfono</dt>
+            <dd class="col-sm-8">
+                @if (Model.Telefono is not null)
+                {
+                    <a href="tel:@Model.Telefono">@Model.Telefono</a>
+                }
+                else
+                {
+                    @:—
+                }
+            </dd>
+            <dt class="col-sm-4">Email</dt>
+            <dd class="col-sm-8 text-break">
+                @if (Model.Email is not null)
+                {
+                    <a href="mailto:@Model.Email">@Model.Email</a>
+                }
+                else
+                {
+                    @:—
+                }
+            </dd>
+            <dt class="col-sm-4">Dirección</dt>
+            <dd class="col-sm-8">@(Model.Direccion ?? "—")</dd>
+            <dt class="col-sm-4">Descuento habitual</dt>
+            <dd class="col-sm-8">@(Model.DescuentoHabitualPct > 0 ? Formato.Porcentaje(Model.DescuentoHabitualPct) : "Sin descuento")</dd>
+            @if (Model.Observaciones is not null)
+            {
+                <dt class="col-sm-4">Observaciones</dt>
+                <dd class="col-sm-8 mb-0" style="white-space: pre-line">@Model.Observaciones</dd>
+            }
+        </dl>
+    </div>
+</div>

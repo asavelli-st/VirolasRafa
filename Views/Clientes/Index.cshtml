@@ -1,0 +1,46 @@
+@model ListadoViewModel<ClienteListaViewModel>
+@{
+    ViewData["Title"] = "Clientes";
+    var filtros = Model.Filtros("Nombre, CUIT / DNI, teléfono o email");
+}
+<div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <h1 class="h3 mb-0 me-auto">Clientes</h1>
+    <a class="btn btn-primary" asp-action="Crear"><i class="fa-solid fa-plus" aria-hidden="true"></i>Nuevo cliente</a>
+</div>
+
+<partial name="_Buscador" model="filtros" />
+
+@if (Model.Pagina.Items.Count == 0)
+{
+    <div class="card"><div class="card-body text-center text-body-secondary py-4">No hay clientes que coincidan con la búsqueda.</div></div>
+}
+else
+{
+    <div class="list-group">
+        @foreach (var c in Model.Pagina.Items)
+        {
+            <a class="list-group-item list-group-item-action py-3 @(c.Activo ? "" : "opacity-75")" asp-action="Detalle" asp-route-id="@c.Id">
+                <div class="d-flex justify-content-between gap-2">
+                    <div class="text-break">
+                        <div class="fw-semibold">@c.Nombre</div>
+                        <div class="small text-body-secondary">
+                            @string.Join(" · ", new[] { c.Documento, c.Telefono, c.Email }.Where(x => !string.IsNullOrEmpty(x)))
+                        </div>
+                    </div>
+                    <div class="text-end text-nowrap">
+                        @if (c.DescuentoHabitualPct > 0)
+                        {
+                            <span class="badge text-bg-primary">Desc. @Formato.Porcentaje(c.DescuentoHabitualPct)</span>
+                        }
+                        @if (!c.Activo)
+                        {
+                            <span class="badge text-bg-light border">Inactivo</span>
+                        }
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+}
+
+<partial name="_Paginacion" model="filtros" />

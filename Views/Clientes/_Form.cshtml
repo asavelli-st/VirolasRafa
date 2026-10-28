@@ -1,0 +1,42 @@
+@model ClienteFormViewModel
+<div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+<input type="hidden" asp-for="Id" />
+<div class="row g-3">
+    <div class="col-12">
+        <label asp-for="Nombre" class="form-label"></label>
+        <input asp-for="Nombre" class="form-control" autocomplete="off" />
+        <span asp-validation-for="Nombre"></span>
+    </div>
+    <div class="col-12 col-md-6">
+        <label asp-for="Documento" class="form-label"></label>
+        <input asp-for="Documento" class="form-control" autocomplete="off" />
+        <div class="form-text">Opcional. Se guarda sin guiones ni puntos.</div>
+        <span asp-validation-for="Documento"></span>
+    </div>
+    <div class="col-12 col-md-6">
+        <label asp-for="DescuentoHabitualPct" class="form-label"></label>
+        <input asp-for="DescuentoHabitualPct" class="form-control" inputmode="decimal" autocomplete="off" />
+        <div class="form-text">Se precarga como descuento total en sus presupuestos.</div>
+        <span asp-validation-for="DescuentoHabitualPct"></span>
+    </div>
+    <div class="col-12 col-md-6">
+        <label asp-for="Telefono" class="form-label"></label>
+        <input asp-for="Telefono" class="form-control" type="tel" autocomplete="off" />
+        <span asp-validation-for="Telefono"></span>
+    </div>
+    <div class="col-12 col-md-6">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" inputmode="email" autocomplete="off" />
+        <span asp-validation-for="Email"></span>
+    </div>
+    <div class="col-12">
+        <label asp-for="Direccion" class="form-label"></label>
+        <input asp-for="Direccion" class="form-control" autocomplete="off" />
+        <span asp-validation-for="Direccion"></span>
+    </div>
+    <div class="col-12">
+        <label asp-for="Observaciones" class="form-label"></label>
+        <textarea asp-for="Observaciones" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Observaciones"></span>
+    </div>
+</div>

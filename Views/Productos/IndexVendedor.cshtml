@@ -1,0 +1,38 @@
+@model ListadoViewModel<ProductoVendedorViewModel>
+@{
+    ViewData["Title"] = "Productos";
+    var filtros = Model.Filtros("Código o descripción", conEstado: false);
+}
+<h1 class="h3 mb-3">Productos</h1>
+
+<partial name="_Buscador" model="filtros" />
+
+@if (Model.Pagina.Items.Count == 0)
+{
+    <div class="card"><div class="card-body text-center text-body-secondary py-4">No hay productos que coincidan con la búsqueda.</div></div>
+}
+else
+{
+    <div class="list-group">
+        @foreach (var p in Model.Pagina.Items)
+        {
+            <a class="list-group-item list-group-item-action py-3" asp-action="Detalle" asp-route-id="@p.Id">
+                <div class="d-flex justify-content-between gap-2">
+                    <div class="text-break">
+                        <div class="fw-semibold">@p.Descripcion</div>
+                        <div class="small text-body-secondary">Código @p.Codigo</div>
+                    </div>
+                    <div class="text-end text-nowrap fw-semibold">@Formato.Moneda(p.Precio)</div>
+                </div>
+                @if (p.Cantidad2 is not null)
+                {
+                    <div class="small text-body-secondary mt-1">
+                        @string.Join(" · ", p.Escalones().Skip(1).Select(e => $"Desde {e.Desde} u.: {Formato.Moneda(e.Precio)}"))
+                    </div>
+                }
+            </a>
+        }
+    </div>
+}
+
+<partial name="_Paginacion" model="filtros" />

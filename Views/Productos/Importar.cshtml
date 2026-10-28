@@ -1,0 +1,141 @@
+@model VistaPreviaImportacionViewModel
+@using VirolasRafa.Services.Importacion
+@{
+    ViewData["Title"] = "Importar productos";
+    string Escalones(FilaImportada f) => string.Join(" · ", new[]
+    {
+        f.Cantidad2 is null ? null : $"{f.Cantidad2}+: {Formato.Moneda(f.Precio2)}",
+        f.Cantidad3 is null ? null : $"{f.Cantidad3}+: {Formato.Moneda(f.Precio3)}",
+    }.Where(x => x is not null));
+}
+<a class="small text-decoration-none" asp-action="Index"><i class="fa-solid fa-arrow-left me-1" aria-hidden="true"></i>Productos</a>
+<h1 class="h3 mb-3">Importar productos desde Excel</h1>
+
+<div class="card mb-3" style="max-width: 820px">
+    <div class="card-body">
+        <form asp-action="Importar" method="post" enctype="multipart/form-data" class="row g-2 align-items-end">
+            <div class="col-12 col-md">
+                <label for="archivo" class="form-label">Archivo .xlsx</label>
+                <input type="file" id="archivo" name="archivo" class="form-control" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required />
+            </div>
+            <div class="col-12 col-md-auto d-grid">
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>Ver vista previa</button>
+            </div>
+        </form>
+        <p class="small text-body-secondary mt-3 mb-0">
+            Columnas: Codigo, Descripcion, Costo, Margen o Precio, y opcionales Cantidad2, Precio2, Cantidad3, Precio3.
+            Los códigos nuevos se crean y los existentes se actualizan. Nada se borra.
+            <a asp-action="Plantilla"><i class="fa-solid fa-download me-1" aria-hidden="true"></i>Descargar plantilla</a>
+        </p>
+    </div>
+</div>
+
+@if (Model.ErrorGeneral is not null)
+{
+    <div class="alert alert-danger" role="alert"><i class="fa-solid fa-circle-exclamation me-1" aria-hidden="true"></i>@Model.ErrorGeneral</div>
+}
+else if (Model.Token is not null)
+{
+    <h2 class="h5">Vista previa de @Model.NombreArchivo</h2>
+    <div class="d-flex flex-wrap gap-2 mb-3">
+        <span class="badge text-bg-success fs-6 fw-normal">@Model.Nuevos.Count nuevos</span>
+        <span class="badge text-bg-primary fs-6 fw-normal">@Model.Actualizados.Count a actualizar</span>
+        <span class="badge text-bg-secondary fs-6 fw-normal">@Model.SinCambios sin cambios</span>
+        <span class="badge text-bg-danger fs-6 fw-normal">@Model.Errores.Count con error</span>
+    </div>
+
+    @if (Model.HayCambios)
+    {
+        <form asp-action="ConfirmarImportacion" method="post" class="mb-4"
+              data-confirmar="Se van a crear @Model.Nuevos.Count productos y actualizar @Model.Actualizados.Count.@(Model.Errores.Count > 0 ? $" Las {Model.Errores.Count} filas con error no se importan." : "") ¿Confirmás la importación?"
+              data-confirmar-boton="Importar">
+            <input type="hidden" name="token" value="@Model.Token" />
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-file-import" aria-hidden="true"></i>Confirmar importación</button>
+            <span class="small text-body-secondary ms-2">La vista previa vale por 30 minutos.</span>
+        </form>
+    }
+    else
+    {
+        <div class="alert alert-secondary">No hay cambios para importar.</div>
+    }
+
+    @if (Model.Errores.Count > 0)
+    {
+        <h3 class="h6 text-danger">Filas con error (no se importan)</h3>
+        <div class="card mb-4">
+            <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0">
+                    <thead><tr><th>Fila</th><th>Código</th><th>Problemas</th></tr></thead>
+                    <tbody>
+                        @foreach (var e in Model.Errores)
+                        {
+                            <tr>
+                                <td>@e.Fila</td>
+                                <td class="text-nowrap">@(e.Codigo ?? "—")</td>
+                                <td>@foreach (var m in e.Errores) { <div>@m</div> }</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+
+    @if (Model.Actualizados.Count > 0)
+    {
+        <h3 class="h6">A actualizar</h3>
+        <div class="card mb-4">
+            <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0">
+                    <thead><tr><th>Código</th><th>Descripción</th><th class="text-end">Costo</th><th class="text-end">Precio</th><th>Por cantidad</th></tr></thead>
+                    <tbody>
+                        @foreach (var c in Model.Actualizados)
+                        {
+                            var a = c.Anterior!;
+                            <tr>
+                                <td class="text-nowrap">@c.Fila.Codigo @if (c.Reactiva) { <span class="badge text-bg-warning ms-1">Se reactiva</span> }</td>
+                                <td>
+                                    @c.Fila.Descripcion
+                                    @if (a.Descripcion != c.Fila.Descripcion) { <div class="small text-body-secondary text-decoration-line-through">@a.Descripcion</div> }
+                                </td>
+                                <td class="text-end text-nowrap">
+                                    @Formato.Moneda(c.Fila.Costo)
+                                    @if (a.Costo != c.Fila.Costo) { <div class="small text-body-secondary text-decoration-line-through">@Formato.Moneda(a.Costo)</div> }
+                                </td>
+                                <td class="text-end text-nowrap">
+                                    @Formato.Moneda(c.Fila.Precio)
+                                    @if (a.Precio != c.Fila.Precio) { <div class="small text-body-secondary text-decoration-line-through">@Formato.Moneda(a.Precio)</div> }
+                                </td>
+                                <td class="small text-nowrap">@Escalones(c.Fila)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+
+    @if (Model.Nuevos.Count > 0)
+    {
+        <h3 class="h6">Nuevos</h3>
+        <div class="card mb-4">
+            <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0">
+                    <thead><tr><th>Código</th><th>Descripción</th><th class="text-end">Costo</th><th class="text-end">Precio</th><th>Por cantidad</th></tr></thead>
+                    <tbody>
+                        @foreach (var c in Model.Nuevos)
+                        {
+                            <tr>
+                                <td class="text-nowrap">@c.Fila.Codigo</td>
+                                <td>@c.Fila.Descripcion</td>
+                                <td class="text-end text-nowrap">@Formato.Moneda(c.Fila.Costo)</td>
+                                <td class="text-end text-nowrap">@Formato.Moneda(c.Fila.Precio)</td>
+                                <td class="small text-nowrap">@Escalones(c.Fila)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+}

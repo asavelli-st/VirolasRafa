@@ -1,0 +1,84 @@
+@model ProductoFormViewModel
+<div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+<input type="hidden" asp-for="Id" />
+
+<div class="row g-3">
+    <div class="col-12 col-md-4">
+        <label asp-for="Codigo" class="form-label"></label>
+        <input asp-for="Codigo" class="form-control" autocomplete="off" />
+        <span asp-validation-for="Codigo"></span>
+    </div>
+    <div class="col-12 col-md-8">
+        <label asp-for="Descripcion" class="form-label"></label>
+        <input asp-for="Descripcion" class="form-control" autocomplete="off" />
+        <span asp-validation-for="Descripcion"></span>
+    </div>
+</div>
+
+<h2 class="h6 mt-4">Precio unitario</h2>
+<p class="small text-body-secondary">Cargá el margen o el precio: el otro se calcula solo.</p>
+<div class="row g-3" data-escalon>
+    <input type="hidden" asp-for="UsarBase" data-usar />
+    <div class="col-12 col-md-4">
+        <label asp-for="Costo" class="form-label"></label>
+        <input asp-for="Costo" class="form-control" inputmode="decimal" autocomplete="off" />
+        <span asp-validation-for="Costo"></span>
+    </div>
+    <div class="col-6 col-md-4">
+        <label asp-for="Margen" class="form-label"></label>
+        <input asp-for="Margen" class="form-control" inputmode="decimal" autocomplete="off" data-margen />
+        <span asp-validation-for="Margen"></span>
+    </div>
+    <div class="col-6 col-md-4">
+        <label asp-for="Precio" class="form-label"></label>
+        <input asp-for="Precio" class="form-control" inputmode="decimal" autocomplete="off" data-precio />
+        <span asp-validation-for="Precio"></span>
+    </div>
+</div>
+
+<h2 class="h6 mt-4">Precios por cantidad <span class="fw-normal text-body-secondary">(opcional)</span></h2>
+<p class="small text-body-secondary">Se aplican desde esa cantidad inclusive. Cada escalón tiene que ser más barato que el anterior.</p>
+
+<div class="border rounded p-3 mb-3">
+    <div class="fw-semibold small mb-2">Escalón 2</div>
+    <div class="row g-3" data-escalon>
+        <input type="hidden" asp-for="Usar2" data-usar />
+        <div class="col-12 col-md-4">
+            <label asp-for="Cantidad2" class="form-label"></label>
+            <input asp-for="Cantidad2" class="form-control" inputmode="numeric" min="2" autocomplete="off" />
+            <span asp-validation-for="Cantidad2"></span>
+        </div>
+        <div class="col-6 col-md-4">
+            <label asp-for="Margen2" class="form-label"></label>
+            <input asp-for="Margen2" class="form-control" inputmode="decimal" autocomplete="off" data-margen />
+            <span asp-validation-for="Margen2"></span>
+        </div>
+        <div class="col-6 col-md-4">
+            <label asp-for="Precio2" class="form-label"></label>
+            <input asp-for="Precio2" class="form-control" inputmode="decimal" autocomplete="off" data-precio />
+            <span asp-validation-for="Precio2"></span>
+        </div>
+    </div>
+</div>
+
+<div class="border rounded p-3">
+    <div class="fw-semibold small mb-2">Escalón 3</div>
+    <div class="row g-3" data-escalon>
+        <input type="hidden" asp-for="Usar3" data-usar />
+        <div class="col-12 col-md-4">
+            <label asp-for="Cantidad3" class="form-label"></label>
+            <input asp-for="Cantidad3" class="form-control" inputmode="numeric" min="3" autocomplete="off" />
+            <span asp-validation-for="Cantidad3"></span>
+        </div>
+        <div class="col-6 col-md-4">
+            <label asp-for="Margen3" class="form-label"></label>
+            <input asp-for="Margen3" class="form-control" inputmode="decimal" autocomplete="off" data-margen />
+            <span asp-validation-for="Margen3"></span>
+        </div>
+        <div class="col-6 col-md-4">
+            <label asp-for="Precio3" class="form-label"></label>
+            <input asp-for="Precio3" class="form-control" inputmode="decimal" autocomplete="off" data-precio />
+            <span asp-validation-for="Precio3"></span>
+        </div>
+    </div>
+</div>

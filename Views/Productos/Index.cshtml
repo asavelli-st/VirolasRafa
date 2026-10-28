@@ -1,0 +1,82 @@
+@model ListadoViewModel<ProductoAdminViewModel>
+@{
+    ViewData["Title"] = "Productos";
+    var filtros = Model.Filtros("Código o descripción");
+}
+<div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <h1 class="h3 mb-0 me-auto">Productos</h1>
+    <a class="btn btn-outline-primary" asp-action="Importar"><i class="fa-solid fa-file-import" aria-hidden="true"></i>Importar Excel</a>
+    <a class="btn btn-primary" asp-action="Crear"><i class="fa-solid fa-plus" aria-hidden="true"></i>Nuevo producto</a>
+</div>
+
+<partial name="_Buscador" model="filtros" />
+
+@if (Model.Pagina.Items.Count == 0)
+{
+    <div class="card"><div class="card-body text-center text-body-secondary py-4">No hay productos que coincidan con la búsqueda.</div></div>
+}
+else
+{
+    @* Celular: tarjetas. Desde md: tabla. *@
+    <div class="list-group d-md-none">
+        @foreach (var p in Model.Pagina.Items)
+        {
+            <a class="list-group-item list-group-item-action py-3 @(p.Activo ? "" : "opacity-75")" asp-action="Detalle" asp-route-id="@p.Id">
+                <div class="d-flex justify-content-between gap-2">
+                    <div class="text-break">
+                        <div class="fw-semibold">@p.Descripcion</div>
+                        <div class="small text-body-secondary">Código @p.Codigo @if (!p.Activo) { <span class="badge text-bg-light border ms-1">Inactivo</span> }</div>
+                    </div>
+                    <div class="text-end text-nowrap">
+                        <div class="fw-semibold">@Formato.Moneda(p.Precio)</div>
+                        <div class="small text-body-secondary">Costo @Formato.Moneda(p.Costo)</div>
+                        <div class="small text-body-secondary">Margen @(p.Margen is null ? "—" : Formato.Porcentaje(p.Margen))</div>
+                    </div>
+                </div>
+                @if (p.Cantidad2 is not null)
+                {
+                    <div class="small text-body-secondary mt-1">
+                        @string.Join(" · ", p.Escalones().Skip(1).Select(e => $"Desde {e.Desde} u.: {Formato.Moneda(e.Precio)}"))
+                    </div>
+                }
+            </a>
+        }
+    </div>
+
+    <div class="card d-none d-md-block">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Descripción</th>
+                        <th class="text-end">Costo</th>
+                        <th class="text-end">Precio</th>
+                        <th class="text-end">Margen</th>
+                        <th>Por cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model.Pagina.Items)
+                    {
+                        <tr class="@(p.Activo ? "" : "opacity-75")">
+                            <td class="text-nowrap"><a asp-action="Detalle" asp-route-id="@p.Id">@p.Codigo</a></td>
+                            <td>@p.Descripcion @if (!p.Activo) { <span class="badge text-bg-light border ms-1">Inactivo</span> }</td>
+                            <td class="text-end text-nowrap">@Formato.Moneda(p.Costo)</td>
+                            <td class="text-end text-nowrap fw-semibold">@Formato.Moneda(p.Precio)</td>
+                            <td class="text-end text-nowrap">@(p.Margen is null ? "—" : Formato.Porcentaje(p.Margen))</td>
+                            <td class="small text-body-secondary">
+                                @foreach (var e in p.Escalones().Skip(1))
+                                {
+                                    <div class="text-nowrap">Desde @e.Desde u.: @Formato.Moneda(e.Precio) (@(e.Margen is null ? "—" : Formato.Porcentaje(e.Margen)))</div>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+<partial name="_Paginacion" model="filtros" />

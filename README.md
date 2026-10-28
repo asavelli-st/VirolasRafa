@@ -20,6 +20,8 @@ dotnet run --launch-profile http
 En Development, al arrancar se aplican las migraciones y se crea el Admin inicial con los datos de User Secrets
 (solo si todavía no existe ningún Admin). Fuera de Development, aplicar las migraciones con `dotnet ef database update`.
 
+- Usuarios de prueba (solo Development): los de la sección `UsuariosPrueba` de User Secrets se crean al arrancar si no existen,
+  por ejemplo `dotnet user-secrets set "UsuariosPrueba:0:Email" "prueba@ejemplo.com"` más `:Password`, `:Nombre` y `:Rol` (Admin o Vendedor).
 - Librerías de front (Bootstrap, Font Awesome, jQuery Validation): `libman.json`, se restauran con `dotnet libman restore`.
 - Migraciones: `dotnet ef migrations add <Nombre> -o Data/Migrations`.
 - Tests: `dotnet test VirolasRafa.slnx`.

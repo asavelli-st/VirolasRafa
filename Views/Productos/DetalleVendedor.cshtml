@@ -1,0 +1,22 @@
+@model ProductoVendedorViewModel
+@{
+    ViewData["Title"] = Model.Descripcion;
+}
+<a class="small text-decoration-none" asp-action="Index"><i class="fa-solid fa-arrow-left me-1" aria-hidden="true"></i>Productos</a>
+<h1 class="h3 mb-0">@Model.Descripcion</h1>
+<p class="text-body-secondary">Código @Model.Codigo</p>
+
+<div class="card" style="max-width: 520px">
+    <div class="card-body">
+        <h2 class="h6">Precios</h2>
+        <ul class="list-group list-group-flush">
+            @foreach (var e in Model.Escalones())
+            {
+                <li class="list-group-item d-flex justify-content-between px-0">
+                    <span>@(e.Desde == 1 ? "Precio unitario" : $"Desde {e.Desde} unidades")</span>
+                    <span class="fw-semibold">@Formato.Moneda(e.Precio)</span>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

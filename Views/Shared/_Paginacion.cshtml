@@ -1,0 +1,26 @@
+@model FiltrosListado
+@{
+    string Url(int pagina) => Context.Request.Path + QueryString.Create(new Dictionary<string, string?>
+    {
+        ["buscar"] = string.IsNullOrWhiteSpace(Model.Buscar) ? null : Model.Buscar,
+        ["estado"] = Model.Estado,
+        ["pagina"] = pagina.ToString(),
+    }.Where(kv => kv.Value is not null)).ToUriComponent();
+}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-3">
+    <span class="small text-body-secondary">@Model.Total @(Model.Total == 1 ? "resultado" : "resultados")</span>
+    @if (Model.TotalPaginas > 1)
+    {
+        <nav aria-label="Páginas">
+            <ul class="pagination mb-0">
+                <li class="page-item @(Model.Pagina <= 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url(Model.Pagina - 1)" aria-label="Anterior"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
+                </li>
+                <li class="page-item disabled"><span class="page-link">@Model.Pagina de @Model.TotalPaginas</span></li>
+                <li class="page-item @(Model.Pagina >= Model.TotalPaginas ? "disabled" : "")">
+                    <a class="page-link" href="@Url(Model.Pagina + 1)" aria-label="Siguiente"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>

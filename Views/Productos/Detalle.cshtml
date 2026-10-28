@@ -1,0 +1,65 @@
+@model ProductoAdminViewModel
+@{
+    ViewData["Title"] = Model.Descripcion;
+}
+<div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <div class="me-auto">
+        <a class="small text-decoration-none" asp-action="Index"><i class="fa-solid fa-arrow-left me-1" aria-hidden="true"></i>Productos</a>
+        <h1 class="h3 mb-0">@Model.Descripcion</h1>
+        <div class="text-body-secondary">Código @Model.Codigo</div>
+    </div>
+    <a class="btn btn-outline-primary" asp-action="Editar" asp-route-id="@Model.Id"><i class="fa-solid fa-pen" aria-hidden="true"></i>Editar</a>
+    @if (Model.Activo)
+    {
+        <form asp-action="Desactivar" asp-route-id="@Model.Id" method="post"
+              data-confirmar="¿Desactivar el producto @Model.Codigo? No se va a poder agregar a presupuestos nuevos. Los presupuestos que ya lo tienen no cambian."
+              data-confirmar-boton="Desactivar">
+            <button type="submit" class="btn btn-outline-danger"><i class="fa-solid fa-ban" aria-hidden="true"></i>Desactivar</button>
+        </form>
+    }
+    else
+    {
+        <form asp-action="Activar" asp-route-id="@Model.Id" method="post">
+            <button type="submit" class="btn btn-outline-success"><i class="fa-solid fa-check" aria-hidden="true"></i>Activar</button>
+        </form>
+    }
+</div>
+
+@if (!Model.Activo)
+{
+    <div class="alert alert-secondary"><i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>Este producto está desactivado.</div>
+}
+
+<div class="card" style="max-width: 640px">
+    <div class="card-body">
+        <div class="d-flex justify-content-between mb-2">
+            <span>Costo</span>
+            <span class="fw-semibold">@Formato.Moneda(Model.Costo)</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>Escalón</th>
+                        <th class="text-end">Precio</th>
+                        <th class="text-end">Margen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model.Escalones())
+                    {
+                        <tr>
+                            <td>@(e.Desde == 1 ? "Precio unitario" : $"Desde {e.Desde} unidades")</td>
+                            <td class="text-end text-nowrap fw-semibold">@Formato.Moneda(e.Precio)</td>
+                            <td class="text-end text-nowrap">@(e.Margen is null ? "—" : Formato.Porcentaje(e.Margen))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (Model.Costo == 0)
+        {
+            <p class="small text-body-secondary mt-2 mb-0">Sin costo cargado: no se puede calcular el margen.</p>
+        }
+    </div>
+</div>

@@ -74,6 +74,8 @@
                 <div class="collapse navbar-collapse" id="menu-principal">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item"><a class="nav-link @Activo("Home")" asp-controller="Home" asp-action="Index"><i class="fa-solid fa-house fa-fw me-1" aria-hidden="true"></i>Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link @Activo("Clientes")" asp-controller="Clientes" asp-action="Index"><i class="fa-solid fa-address-book fa-fw me-1" aria-hidden="true"></i>Clientes</a></li>
+                        <li class="nav-item"><a class="nav-link @Activo("Productos")" asp-controller="Productos" asp-action="Index"><i class="fa-solid fa-boxes-stacked fa-fw me-1" aria-hidden="true"></i>Productos</a></li>
                         @if (User.IsInRole(Roles.Admin))
                         {
                             <li class="nav-item"><a class="nav-link @Activo("Usuarios")" asp-controller="Usuarios" asp-action="Index"><i class="fa-solid fa-users fa-fw me-1" aria-hidden="true"></i>Usuarios</a></li>

@@ -1,26 +1,30 @@
-@using VirolasRafa.Services.Infraestructura
 @{
     ViewData["Title"] = "Inicio";
+    var accesos = new List<(string Controlador, string Icono, string Titulo, string Texto)>
+    {
+        ("Clientes", "fa-address-book", "Clientes", "Altas, datos y descuento habitual"),
+        ("Productos", "fa-boxes-stacked", "Productos", User.IsInRole(Roles.Admin) ? "Lista de precios e importación" : "Lista de precios"),
+    };
+    if (User.IsInRole(Roles.Admin))
+    {
+        accesos.Add(("Usuarios", "fa-users", "Usuarios", "Altas, roles y contraseñas"));
+    }
 }
 <h1 class="h3 mb-3">Hola, @User.FindFirst(UsuarioClaimsFactory.ClaimNombre)?.Value</h1>
 
 <div class="row g-3">
-    @if (User.IsInRole(Roles.Admin))
+    @foreach (var a in accesos)
     {
         <div class="col-12 col-md-6 col-lg-4">
-            <a class="card tarjeta-acceso h-100 text-decoration-none" asp-controller="Usuarios" asp-action="Index">
+            <a class="card tarjeta-acceso h-100 text-decoration-none" asp-controller="@a.Controlador" asp-action="Index">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <i class="fa-solid fa-users fa-2x text-primary" aria-hidden="true"></i>
+                    <i class="fa-solid @a.Icono fa-2x fa-fw text-primary" aria-hidden="true"></i>
                     <div>
-                        <div class="fw-semibold">Usuarios</div>
-                        <div class="small text-body-secondary">Altas, roles y contraseñas</div>
+                        <div class="fw-semibold">@a.Titulo</div>
+                        <div class="small text-body-secondary">@a.Texto</div>
                     </div>
                 </div>
             </a>
         </div>
-    }
-    else
-    {
-        <p class="text-body-secondary">Usá el menú para moverte por el sistema.</p>
     }
 </div>

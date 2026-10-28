@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using VirolasRafa.Data;
 using VirolasRafa.Models;
 using VirolasRafa.Services;
+using VirolasRafa.Services.Importacion;
 using VirolasRafa.Services.Infraestructura;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,11 +50,16 @@ builder.Services.AddAuthorizationBuilder()
 builder.Services.AddControllersWithViews(o =>
 {
     o.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+    o.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
     MensajesValidacionEs.Configurar(o);
 });
 
+builder.Services.AddMemoryCache();
 builder.Services.Configure<EmpresaOptions>(builder.Configuration.GetSection(EmpresaOptions.Seccion));
 builder.Services.AddScoped<UsuariosService>();
+builder.Services.AddScoped<ClientesService>();
+builder.Services.AddScoped<ProductosService>();
+builder.Services.AddScoped<ImportacionProductosService>();
 
 var app = builder.Build();
 
@@ -62,7 +68,7 @@ using (var scope = app.Services.CreateScope())
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
     if (app.Environment.IsDevelopment())
         await scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.MigrateAsync();
-    await SeedInicial.EjecutarAsync(scope.ServiceProvider, app.Configuration, logger);
+    await SeedInicial.EjecutarAsync(scope.ServiceProvider, app.Configuration, logger, app.Environment.IsDevelopment());
 }
 
 if (!app.Environment.IsDevelopment())

@@ -1,4 +1,21 @@
-﻿// Selector de tema Auto / Claro / Oscuro. El tema inicial lo aplica un script en el <head> del layout.
+﻿// Lee un número en formato argentino o con punto decimal; mismas reglas que Services/Numeros.cs.
+// Devuelve NaN si no es un número. Con coma: el punto es de miles ("1.234,56"). Sin coma: un único punto es el decimal.
+window.leerNumero = function (texto) {
+    var t = String(texto == null ? '' : texto).replace(/[\s$%]/g, '');
+    if (t === '') return NaN;
+    if (t.indexOf(',') >= 0) t = t.replace(/\./g, '').replace(',', '.');
+    else if ((t.match(/\./g) || []).length > 1) t = t.replace(/\./g, '');
+    return /^[-+]?(\d+\.?\d*|\.\d+)$/.test(t) ? parseFloat(t) : NaN;
+};
+
+// Formatea con coma decimal y sin separador de miles, para campos de formulario.
+window.formatearCampo = function (n, decimales) {
+    if (n == null || isNaN(n)) return '';
+    var r = Number(Math.round(Number(n + 'e' + decimales)) + 'e-' + decimales);
+    return String(r).replace('.', ',');
+};
+
+// Selector de tema Auto / Claro / Oscuro. El tema inicial lo aplica un script en el <head> del layout.
 (function () {
     var oscuro = matchMedia('(prefers-color-scheme: dark)');
     var iconos = { auto: 'fa-circle-half-stroke', light: 'fa-sun', dark: 'fa-moon' };
